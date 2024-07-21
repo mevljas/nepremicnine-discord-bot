@@ -1,0 +1,33 @@
+version: '3.8'
+name: nepremicnine
+services:
+  nepremicnine-db:
+    image: postgres:15.1-alpine
+    container_name: nepremicnine-db
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-U", "${POSTGRES_USER}" ]
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_INITDB_ARGS: "--locale-provider=icu --icu-locale=sl-SI"
+      LANG: sl_SI.utf8
+      TZ: 'Europe/Ljubljana'
+    env_file:
+      - .env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
+
+volumes:
+  postgres:
+    name: nepremicnine-db
