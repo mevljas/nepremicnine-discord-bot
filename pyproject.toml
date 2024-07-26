@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "nepremicnine-discord-bot"
+version = "0.1.0"
+description = "A discord bot for notifying about new listings on the nepremicnine.net website."
+authors = ["mevljas <sebastjan.mevlja@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+beautifulsoup4 = "^4.12.3"
+black = "^24.4.2"
+playwright = "^1.45.1"
+sqlalchemy = "^2.0.31"
+pytest-playwright = "^0.5.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

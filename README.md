@@ -30,7 +30,7 @@ Alternatively you can set it up using Pycharm.
 ### Install requirements
 
 ```bash
-pip install -r requirements.txt
+poetry install
 ```
 
 ### Install the [Pytest plugin](https://pypi.org/project/pytest-playwright/):
