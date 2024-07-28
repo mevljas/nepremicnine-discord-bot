@@ -56,7 +56,7 @@ async def crawl_url(
         return
 
     # Get saved site from the database (if exists)
-    saved_site = await database_manager.get_site(domain=domain)
+    saved_site = await database_manager.get_listing(domain=domain)
 
     site_id: int
     if saved_site:
@@ -138,8 +138,8 @@ async def crawl_url(
             )
             if page_collision is not None:
                 original_page_id, original_site_id = page_collision
-                await database_manager.update_page(
-                    page_id=page_id,
+                await database_manager.update_listing(
+                    listing_id=page_id,
                     status=status,
                     site_id=original_site_id,
                     page_type_code="DUPLICATE",
@@ -171,8 +171,8 @@ async def crawl_url(
 
                 # SAVE PAGE
                 # Save page to the database
-                await database_manager.update_page(
-                    page_id=page_id,
+                await database_manager.update_listing(
+                    listing_id=page_id,
                     html=html,
                     status=status,
                     site_id=site_id,
@@ -202,9 +202,9 @@ async def crawl_url(
             # Check page content type for binary file
             if data_type is not None:
                 # Save page as binary
-                await database_manager.update_page(
+                await database_manager.update_listing(
                     site_id=site_id,
-                    page_id=page_id,
+                    listing_id=page_id,
                     status=status,
                     page_type_code="BINARY",
                     accessed_time=accessed_time,

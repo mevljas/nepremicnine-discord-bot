@@ -1,1 +1,1 @@
-CREATE SCHEMA crawldb;
+CREATE SCHEMA nepremicnine;

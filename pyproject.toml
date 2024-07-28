@@ -13,6 +13,7 @@ black = "^24.4.2"
 playwright = "^1.45.1"
 sqlalchemy = "^2.0.31"
 pytest-playwright = "^0.5.1"
+asyncpg = "^0.29.0"
 
 
 [build-system]

@@ -32,10 +32,14 @@ class Listing(Base):
     __tablename__ = "listing"
 
     id: Mapped[int] = Column(Integer, primary_key=True)
-    url: Mapped[String] = Column(String(3000), unique=True)
-    title: Mapped[String] = Column(String(100), unique=False)
-    category: Mapped[String] = Column(String(100), unique=False)
+    url: Mapped[str] = Column(String(3000), unique=True)
+    title: Mapped[str] = Column(String(100), unique=False)
     price: Mapped[float] = Column(Integer, unique=False)
     accessed_time = Column(DateTime)
     listing_type: Mapped[Enum[PropertyType]] = Column(Enum(PropertyType), unique=False)
     property_type: Mapped[Enum[ListingType]] = Column(Enum(ListingType), unique=False)
+
+
+class Frontier(Base):
+    __tablename__ = "frontier"
+    url: Mapped[str] = Column(String(3000), primary_key=True)

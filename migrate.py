@@ -1,12 +1,9 @@
 import asyncio
-import logging
 import os
 
 from dotenv import load_dotenv
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from database.database_manager import DatabaseManager
-from database.models import , ListingType
 from logger.logger import logger
 
 
