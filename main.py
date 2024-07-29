@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 from database.database_manager import DatabaseManager
 from logger.logger import logger
-from spider.spider import start_spider
+from spider.spider import run_search
 
 
 def load_env() -> (str, str, str, int):
@@ -34,7 +34,7 @@ async def main():
     )
 
     # Run the spider.
-    await start_spider(database_manager=database_manager)
+    await run_search(database_manager=database_manager)
 
     logger.info("Application finished.")
 
