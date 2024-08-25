@@ -36,7 +36,7 @@ async def run_search(database_manager: DatabaseManager):
         # create a new page in a pristine context.
         browser_page = await context.new_page()
         # Prevent loading some resources for better performance.
-        await browser_page.route("**/*", block_aggressively)
+        # await browser_page.route("**/*", block_aggressively)
 
         # Run the search!
         await search(
