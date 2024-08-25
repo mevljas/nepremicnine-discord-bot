@@ -31,7 +31,7 @@ async def run_search(database_manager: DatabaseManager):
         # create a new incognito browser context.
         context = await browser.new_context(
             ignore_https_errors=True,
-            user_agent=USER_AGENT,
+            # user_agent=USER_AGENT,
         )
         # create a new page in a pristine context.
         browser_page = await context.new_page()
