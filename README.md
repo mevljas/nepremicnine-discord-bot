@@ -51,6 +51,14 @@ playwright install
 python migrate.py
 ```
 
+## Run the local browser
+
+```bash
+cd 'C:\Program Files\Google\Chrome\Application'
+./chrome.exe -remote-debugging-port=9222
+
+```
+
 ## Run the crawler
 
 ```bash

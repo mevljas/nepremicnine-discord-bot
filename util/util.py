@@ -1,12 +1,4 @@
-import re
 import socket
-from urllib.parse import ParseResult
-from urllib.parse import urlparse
-from urllib.robotparser import RobotFileParser
-
-import requests
-from url_normalize import url_normalize
-from w3lib.url import url_query_cleaner
 
 from common.constants import (
     USER_AGENT,

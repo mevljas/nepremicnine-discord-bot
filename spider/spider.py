@@ -13,28 +13,13 @@ async def run_search(database_manager: DatabaseManager):
     """
     logger.info("Spider started.")
     async with async_playwright() as playwright:
-        browser = await playwright.chromium.launch(
-            headless=False,
-            args=[
-                "--ignore-certificate-errors",
-                "--ignore-urlfetcher-cert-requests",
-                "--ignore-certificate-errors",
-                "--allow-running-insecure-content",
-                "--ignore-certificate-errors-spki-lis",
-            ],
-        )
+        # Connect to the browser.
+        # We need to use a real browser because of Cloudflare protection.
+        browser = await playwright.chromium.connect_over_cdp("http://localhost:9222")
 
-        # browser = await playwright.firefox.launch(firefox_user_prefs={"security.enterprise_roots.enabled": True,
-        # "acceptInsecureCerts": True, "security.ssl.enable_ocsp_stapling": False,
-        # "network.stricttransportsecurity.preloadlist": False})
+        # create a new page.
+        browser_page = await browser.new_page()
 
-        # create a new incognito browser context.
-        context = await browser.new_context(
-            ignore_https_errors=True,
-            # user_agent=USER_AGENT,
-        )
-        # create a new page in a pristine context.
-        browser_page = await context.new_page()
         # Prevent loading some resources for better performance.
         # await browser_page.route("**/*", block_aggressively)
 
