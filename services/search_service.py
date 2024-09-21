@@ -18,7 +18,9 @@ async def search(
     await browser_page.locator("#NNd197").check()
 
     # Select "LJ-mesto" region.
-    await browser_page.locator("path:nth-child(13)").click()
+    await browser_page.locator(
+        '//div[@id="regue"]//div[@id="NNmap"]/div/*[name()="svg"]/*[name()="g"]/*[name()="path"][13]'
+    ).click()
 
     # Select listing type.
     await browser_page.locator("#NNsearch").get_by_text("Oddaja").click()
