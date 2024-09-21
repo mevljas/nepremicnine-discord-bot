@@ -43,7 +43,7 @@ async def search(
     await browser_page.locator("#NNc1").fill("300")
 
     # Maximum price
-    await browser_page.locator("#NNc2").fill("800")
+    await browser_page.locator("#NNc2").fill("900")
 
     # Minimum size
     await browser_page.locator("#NNm1").fill("30")
