@@ -27,6 +27,8 @@ async def extract(
 
         details = item.locator('xpath=div/div[contains(@class, "property-details")]')
 
+        url = await details.locator("xpath=a").get_attribute("href")
+
         title = await details.locator("xpath=a/h2").inner_text()
 
         description = await details.locator(
@@ -44,6 +46,8 @@ async def extract(
             "content"
         )
 
+        id = url.split("/")[-2]
+
         logger.debug(
             f"""
         Title: {title},
@@ -52,7 +56,9 @@ async def extract(
         Price: {price},
         Size: {size},
         Year: {year},
-        Floor: {floor}.
+        Floor: {floor},
+        Id: {id},
+        Url: {url}.
         """
         )
 
