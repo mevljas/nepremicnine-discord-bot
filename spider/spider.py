@@ -34,7 +34,7 @@ async def run_search(database_manager: DatabaseManager):
 
         # await browser_page.pause()
 
-        await extract(browser_page=browser_page)
+        extracted_data = await extract(browser_page=browser_page)
 
         await browser_page.close()
 
