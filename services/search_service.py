@@ -8,6 +8,9 @@ async def search(
 ) -> set[str]:
     logger.debug(f"Searching with parameters...")
 
+    # TODO: We don't really have to input all this data, because we can just use the URL.
+    # https://www.nepremicnine.net/oglasi-oddaja/ljubljana-mesto/stanovanje/2.5-sobno,3-sobno,3.5-sobno,4-sobno,4.5-sobno,5-in-vecsobno,apartma/cena-od-300-do-900-eur-na-mesec,velikost-od-30-m2/
+
     # Go to the nepremicnine.net advance search.
     await browser_page.goto("https://www.nepremicnine.net/nepremicnine.html")
 
@@ -51,5 +54,3 @@ async def search(
 
     # Submit.
     await browser_page.get_by_role("button", name="Prikaži rezultate").click()
-
-    await browser_page.pause()

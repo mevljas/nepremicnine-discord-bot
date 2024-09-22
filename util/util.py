@@ -15,14 +15,3 @@ async def block_aggressively(route):
         await route.abort()
     else:
         await route.continue_()
-
-
-def get_site_ip(hostname: str):
-    """
-    Returns site's ip address.
-    """
-    try:
-        return socket.gethostbyname(hostname)
-    except:
-        logger.warning(f"Getting site ip address failed.")
-        return None
