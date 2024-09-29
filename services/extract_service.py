@@ -1,5 +1,7 @@
 """Module that contains data extraction logic."""
 
+from typing import Tuple, Dict
+
 from playwright.async_api import Page, Locator
 
 from logger.logger import logger
@@ -7,7 +9,7 @@ from logger.logger import logger
 
 async def parse_page(
     browser_page: Page,
-) -> dict[str, tuple[str, str | None, str, str | None, str, str, str, str | None]]:
+) -> dict[str, tuple[str, str | None, str, float, float, int, str | None, str | None]]:
     """Parses the page and extracts data."""
 
     logger.debug("Parsing page...")
@@ -36,7 +38,7 @@ async def parse_page(
 
 async def parse_result(
     item: Locator,
-) -> tuple[str, tuple[str, str | None, str, str | None, str, str, str, str | None]]:
+) -> tuple[str, tuple[str, str | None, str, float, float, int, str | None, str | None]]:
     """Extracts data from the result."""
 
     logger.debug("Extracting result data...")
@@ -64,12 +66,13 @@ async def parse_result(
     props = await details.locator(
         'xpath=ul[@itemprop="disambiguatingDescription"]/li'
     ).all()
-    size = await props[0].inner_text()
-    year = await props[1].inner_text()
-    floor = await props[2].inner_text()
+    size = float((await props[0].inner_text()).split(" ")[0].replace(",", "."))
+    year = int(await props[1].inner_text())
 
-    price = await details.locator('xpath=meta[@itemprop="price"]').get_attribute(
-        "content"
+    floor = await props[2].inner_text() if len(props) > 2 else None
+
+    price = float(
+        await details.locator('xpath=meta[@itemprop="price"]').get_attribute("content")
     )
 
     item_id = url.split("/")[-2]
@@ -79,7 +82,7 @@ async def parse_result(
     Title: %s,
     Listing Type: %s,
     Property Type: %s,
-    Rooms Count: %d,
+    Rooms Count: %s,
     Image URL: %s,
     Description: %s,
     Price: %f,

@@ -4,6 +4,7 @@ import asyncio
 
 from dotenv import load_dotenv
 
+from database.database_manager import DatabaseManager
 from logger.logger import logger
 from spider.spider import run_search
 
@@ -26,6 +27,11 @@ async def main():
 
     # Load env variables.
     # postgres_user, postgres_password, postgres_db = load_env()
+
+    # Setup database manager.
+    database_manager = DatabaseManager(
+        url="sqlite+aiosqlite:///nepremicnine_database.sqlite"
+    )
 
     # Run the spider.
     await run_search()

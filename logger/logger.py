@@ -45,11 +45,11 @@ class ColorizedArgsFormatter(logging.Formatter):
         self.level_to_formatter = {}
 
         def add_color_format(level: int):
-            color = ColorizedArgsFormatter.level_to_color[level]
+            color = ColorizedArgsFormatter.level_to_color[level].value
             _format = fmt
             for fld in ColorizedArgsFormatter.level_fields:
                 search = r"(%\(" + fld + r"\).*?s)"
-                _format = re.sub(search, f"{color}\\1{ColorCodes.RESET}", _format)
+                _format = re.sub(search, f"{color}\\1{ColorCodes.RESET.value}", _format)
             formatter = logging.Formatter(_format)
             self.level_to_formatter[level] = formatter
 
@@ -81,7 +81,7 @@ class ColorizedArgsFormatter(logging.Formatter):
             color_index = placeholder_count % len(ColorizedArgsFormatter.arg_colors)
             color = ColorizedArgsFormatter.arg_colors[color_index]
             msg = msg.replace("_{{", color + "{", 1)
-            msg = msg.replace("_}}", "}" + ColorCodes.RESET, 1)
+            msg = msg.replace("_}}", "}" + ColorCodes.RESET.value, 1)
             placeholder_count += 1
 
         record.msg = msg.format(*record.args)
