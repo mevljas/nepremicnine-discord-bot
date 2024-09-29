@@ -3,7 +3,7 @@ This module contains the SQLAlchemy models for the database.
 """
 
 import enum
-from typing import Set
+from typing import List
 
 from sqlalchemy import (
     Column,
@@ -46,7 +46,7 @@ class Listing(Base):
     id: Mapped[str] = Column(Integer, primary_key=True)
     url: Mapped[str] = Column(String(3000), unique=True)
     accessed_time = Column(DateTime)
-    history: Mapped[Set["History"]] = relationship(back_populates="listing")
+    history: Mapped[List["History"]] = relationship(back_populates="listing")
 
 
 class History(Base):
