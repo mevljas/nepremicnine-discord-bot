@@ -1,12 +1,16 @@
 """Module that contains main spider logic."""
 
+from datetime import datetime
+
 from playwright.async_api import async_playwright
 
+from database.database_manager import DatabaseManager
+from database.models import Listing, History
 from logger.logger import logger
 from services.extract_service import parse_page
 
 
-async def run_search():
+async def run_spider(database_manager: DatabaseManager):
     """
     Setups the playwright library and starts the crawler.
     """
@@ -35,8 +39,25 @@ async def run_search():
 
         # await browser_page.pause()
 
-        await parse_page(browser_page=browser_page)
+        results = await parse_page(browser_page=browser_page)
 
+        for item_id, data in results.items():
+            logger.debug("Item ID: %s", item_id)
+            title, image_url, description, price, size, year, floor, url = data
+            await database_manager.save_listing(
+                Listing(
+                    url=url,
+                    accessed_time=datetime.now(),
+                    id=item_id,
+                    history=[
+                        History(
+                            accessed_time=datetime.now(),
+                            listing_id=item_id,
+                            price=price,
+                        )
+                    ],
+                )
+            )
         await browser_page.close()
 
     await browser.close()

@@ -3,7 +3,7 @@ This module contains the SQLAlchemy models for the database.
 """
 
 import enum
-from typing import List
+from typing import Set
 
 from sqlalchemy import (
     Column,
@@ -11,9 +11,8 @@ from sqlalchemy import (
     String,
     DateTime,
     MetaData,
-    ForeignKey,
 )
-from sqlalchemy.orm import declarative_base, Mapped, relationship, mapped_column
+from sqlalchemy.orm import declarative_base, Mapped, relationship
 
 meta = MetaData()
 Base = declarative_base(metadata=meta)
@@ -47,7 +46,7 @@ class Listing(Base):
     id: Mapped[str] = Column(Integer, primary_key=True)
     url: Mapped[str] = Column(String(3000), unique=True)
     accessed_time = Column(DateTime)
-    history: Mapped[List["history"]] = relationship()
+    history: Mapped[Set["History"]] = relationship(back_populates="listing")
 
 
 class History(Base):
@@ -60,4 +59,3 @@ class History(Base):
     id: Mapped[int] = Column(Integer, primary_key=True, autoincrement=True)
     price: Mapped[float] = Column(Integer, unique=False)
     accessed_time = Column(DateTime)
-    listing_id: Mapped[str] = mapped_column(ForeignKey("listing.id"))
