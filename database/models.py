@@ -15,7 +15,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import declarative_base, Mapped, relationship, mapped_column
 
-meta = MetaData(schema="nepremicnine")
+meta = MetaData()
 Base = declarative_base(metadata=meta)
 
 
