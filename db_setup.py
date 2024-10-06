@@ -1,3 +1,7 @@
+"""
+Module for setting up the database.
+"""
+
 import asyncio
 import os
 
@@ -20,25 +24,30 @@ def load_env() -> (str, str, str):
 
 
 async def main():
-    logger.info("Migration started.")
+    """
+    Main function.
+    :return:
+    """
+    logger.info("DB setup started.")
 
     # Load env variables.
-    postgres_user, postgres_password, postgres_db = load_env()
+    # postgres_user, postgres_password, postgres_db = load_env()
+
+    # Delete existing database if it exists.
+    if os.path.exists("nepremicnine_database.sqlite"):
+        os.remove("nepremicnine_database.sqlite")
 
     # Setup database manager.
     database_manager = DatabaseManager(
         url="sqlite+aiosqlite:///nepremicnine_database.sqlite"
     )
 
-    # Drop existing tables
-    await database_manager.delete_tables()
-
     # Create database tables.
     await database_manager.create_models()
 
     # Clean database manager.
     await database_manager.cleanup()
-    logger.info("Migration finished.")
+    logger.info("DB setup finished.")
 
 
 if __name__ == "__main__":

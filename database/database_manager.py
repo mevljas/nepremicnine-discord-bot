@@ -6,7 +6,7 @@ import threading
 from asyncio import current_task
 from datetime import datetime
 
-from sqlalchemy import select, update, exc
+from sqlalchemy import update, exc
 from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import (
     async_scoped_session,
 )
 
-from database.models import meta, Listing, Base
+from database.models import meta, Listing, Price
 from logger.logger import logger
 
 
@@ -81,19 +81,6 @@ class DatabaseManager:
             await conn.run_sync(meta.create_all)
         logger.debug("Finished creating ORM modules.")
 
-    async def delete_tables(self):
-        """
-        Deletes all tables from the database.
-        """
-        logger.debug("Deleting database tables.")
-        try:
-            async with self.async_engine().begin() as conn:
-                await conn.run_sync(meta.reflect)
-                await conn.run_sync(meta.drop_all)
-        except exc.OperationalError:
-            logger.debug("Tables do not exist.")
-        logger.debug("Finished deleting database tables.")
-
     async def update_listing(
         self,
         listing_id: int,
@@ -123,33 +110,43 @@ class DatabaseManager:
 
     async def save_listing(
         self,
-        listing: Listing,
+        item_id: str,
+        data: tuple[str, str | None, str, float, float, int, str | None, str | None],
     ) -> int:
         """
         Saved a crawled listing to the db.
         """
-        logger.debug("Saving new listing to the database.")
-        listing_id: int
+        logger.debug("Saving new listing %s to the database.", item_id)
+
+        title, image_url, description, current_price, size, year, floor, url = data
+
         async with self.async_session_factory()() as session:
             try:
+
+                listing = Listing(
+                    url=url,
+                    accessed_time=datetime.now(),
+                    nepremicnine_id=item_id,
+                )
+
                 session.add(listing)
+
+                price = Price(accessed_time=datetime.now(), price=current_price)
+                session.add(price)
+                listing.prices.append(price)
+
                 await session.flush()
-                listing_id = listing.id
                 await session.commit()
                 logger.debug("New listing saved to the database.")
-            except exc.IntegrityError:
+            except exc.SQLAlchemyError as e:
                 await session.rollback()
-                logger.debug(
-                    "Adding listing failed because it already exists in the database."
-                )
-                listing: Listing = (
-                    (
-                        await session.execute(
-                            select(Listing).where(Listing.url == listing.url).limit(1)
-                        )
-                    )
-                    .scalars()
-                    .first()
-                )
-                listing_id = listing.id
-            return listing_id
+                logger.warning("Error saving listing to the database with error: %s", e)
+                # listing: Listing = (
+                #     (
+                #         await session.execute(
+                #             select(Listing).where(Listing.url == listing.url).limit(1)
+                #         )
+                #     )
+                #     .scalars()
+                #     .first()
+                # )

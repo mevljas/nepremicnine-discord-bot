@@ -5,7 +5,7 @@ from datetime import datetime
 from playwright.async_api import async_playwright
 
 from database.database_manager import DatabaseManager
-from database.models import Listing, History
+from database.models import Listing, Price
 from logger.logger import logger
 from services.extract_service import parse_page
 
@@ -43,21 +43,7 @@ async def run_spider(database_manager: DatabaseManager):
 
         for item_id, data in results.items():
             logger.debug("Item ID: %s", item_id)
-            title, image_url, description, price, size, year, floor, url = data
-            await database_manager.save_listing(
-                Listing(
-                    url=url,
-                    accessed_time=datetime.now(),
-                    id=item_id,
-                    history=[
-                        History(
-                            accessed_time=datetime.now(),
-                            listing_id=item_id,
-                            price=price,
-                        )
-                    ],
-                )
-            )
+            await database_manager.save_listing(item_id, data)
         await browser_page.close()
 
     await browser.close()
