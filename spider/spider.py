@@ -1,11 +1,8 @@
 """Module that contains main spider logic."""
 
-from datetime import datetime
-
 from playwright.async_api import async_playwright
 
 from database.database_manager import DatabaseManager
-from database.models import Listing, Price
 from logger.logger import logger
 from services.extract_service import parse_page
 

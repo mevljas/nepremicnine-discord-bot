@@ -1,7 +1,5 @@
 """Module that contains data extraction logic."""
 
-from typing import Tuple, Dict
-
 from playwright.async_api import Page, Locator
 
 from logger.logger import logger

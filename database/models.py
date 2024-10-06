@@ -1,3 +1,4 @@
+# pylint: disable=too-few-public-methods
 """
 This module contains the SQLAlchemy models for the database.
 """

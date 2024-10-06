@@ -6,7 +6,7 @@ import threading
 from asyncio import current_task
 from datetime import datetime
 
-from sqlalchemy import update, exc
+from sqlalchemy import exc
 from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
@@ -81,38 +81,33 @@ class DatabaseManager:
             await conn.run_sync(meta.create_all)
         logger.debug("Finished creating ORM modules.")
 
-    async def update_listing(
+    async def add_new_price(
         self,
         listing_id: int,
-        accessed_time: datetime,
-        title: str,
-        price: float,
-        url: str,
+        current_price: float,
     ):
         """
-        Updates a listing in the database.
+        Adds a new price to the listing.
         """
-        logger.debug("Updating listing in the database.")
+        logger.debug("Saving new price in the database.")
         async with self.async_session_factory()() as session:
-            await session.execute(
-                update(Listing)
-                .where(Listing.id == listing_id)
-                .values(
-                    accessed_time=accessed_time,
-                    title=title,
-                    price=price,
-                    url=url,
-                )
-            )
+
+            listing = session.get(Listing, listing_id)
+
+            price = Price(accessed_time=datetime.now(), price=current_price)
+            session.add(price)
+            listing.prices.append(price)
+
+            await session.flush()
             await session.commit()
 
-            logger.debug("Listing updated.")
+            logger.debug("Price saved.")
 
     async def save_listing(
         self,
         item_id: str,
         data: tuple[str, str | None, str, float, float, int, str | None, str | None],
-    ) -> int:
+    ):
         """
         Saved a crawled listing to the db.
         """
