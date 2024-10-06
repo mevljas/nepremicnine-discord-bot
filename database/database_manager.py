@@ -6,7 +6,7 @@ import threading
 from asyncio import current_task
 from datetime import datetime
 
-from sqlalchemy import exc
+from sqlalchemy import exc, select, Result
 from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
@@ -145,3 +145,22 @@ class DatabaseManager:
                 #     .scalars()
                 #     .first()
                 # )
+
+    async def get_listings(self):
+        """
+        Returns all listings.
+        """
+        logger.debug("Getting all listings from the database.")
+        async with self.async_session_factory()() as session:
+            # Select all listing and join them with their last price (by date).
+            stmt = (
+                select(Listing.id, Price.price)
+                .join(Price)
+                .order_by(Price.accessed_time.desc())
+                .distinct(Listing.id)
+            )
+            result: Result = await session.execute(stmt)
+            logger.debug("Getting all listings finished.")
+
+            # return a dictionary of listings. Use id as the key and price as the value.
+            return {item[0]: item[1] for item in result.all()}

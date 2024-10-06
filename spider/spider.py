@@ -36,11 +36,34 @@ async def run_spider(database_manager: DatabaseManager):
 
         # await browser_page.pause()
 
+        saved_results = await database_manager.get_listings()
+
         results = await parse_page(browser_page=browser_page)
 
-        for item_id, data in results.items():
-            logger.debug("Item ID: %s", item_id)
-            await database_manager.save_listing(item_id, data)
+        for listing_id, data in results.items():
+            logger.debug("Listing ID: %s", listing_id)
+
+            # TODO: this check doesn't work yet.
+            if listing_id in saved_results:
+                logger.debug("Listing already saved.")
+
+                _, _, _, current_price, _, _, _, url = data
+
+                if saved_results[listing_id] != current_price:
+                    logger.debug("New price detected.")
+                    await database_manager.add_new_price(
+                        listing_id=saved_results[listing_id],
+                        current_price=current_price,
+                    )
+
+                else:
+                    logger.debug("No new price detected.")
+
+                continue
+
+            # We found a new listing.
+            logger.debug("New listing found.")
+            await database_manager.save_listing(listing_id, data)
         await browser_page.close()
 
     await browser.close()
