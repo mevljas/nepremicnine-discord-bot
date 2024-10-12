@@ -20,6 +20,9 @@ pylint = "^3.3.1"
 urllib3 = "^2.2.3"
 aiosqlite = "^0.20.0"
 
+[tool.black]
+required-version = "24.4.2"
+
 
 [build-system]
 requires = ["poetry-core"]
