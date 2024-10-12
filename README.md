@@ -38,12 +38,6 @@ Alternatively you can set it up using Pycharm.
 poetry install
 ```
 
-### Install the [Pytest plugin](https://pypi.org/project/pytest-playwright/):
-
-```bash
-pip install pytest-playwright
-```
-
 ### Install Playwright browsers (chromium, firefox, webkit)
 
 ```bash
