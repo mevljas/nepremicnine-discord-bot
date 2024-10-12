@@ -154,7 +154,7 @@ class DatabaseManager:
         async with self.async_session_factory()() as session:
             # Select all listing and join them with their last price (by date).
             stmt = (
-                select(Listing.id, Price.price)
+                select(Listing.nepremicnine_id, Listing.id, Price.price)
                 .join(Price)
                 .order_by(Price.accessed_time.desc())
                 .distinct(Listing.id)
@@ -163,4 +163,4 @@ class DatabaseManager:
             logger.debug("Getting all listings finished.")
 
             # return a dictionary of listings. Use id as the key and price as the value.
-            return {item[0]: item[1] for item in result.all()}
+            return {item[0]: (item[1], item[2]) for item in result.all()}

@@ -50,10 +50,10 @@ pip install pytest-playwright
 playwright install
 ```
 
-### Run database migrations
+### Setup the database
 
 ```bash
-python migrate.py
+python setup_db.py
 ```
 
 ## Run the local browser
