@@ -47,6 +47,10 @@ async def parse_result(
         .get_attribute("src")
     )
 
+    # Replace the url domain, so it will work on Discord.
+    if image_url:
+        image_url = image_url.replace("img.nepremicnine.net", "img.onnepremicnine.net")
+
     details = item.locator('xpath=div/div[contains(@class, "property-details")]')
 
     listing_type, property_type = (

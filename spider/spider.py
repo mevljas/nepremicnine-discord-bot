@@ -61,6 +61,8 @@ async def run_spider(database_manager: DatabaseManager):
                         current_price=current_price,
                     )
 
+                    discord_listings.append(new_data)
+
                 else:
                     logger.debug("No new saved_price detected.")
 
@@ -73,6 +75,6 @@ async def run_spider(database_manager: DatabaseManager):
         await browser_page.close()
 
     await browser.close()
-    logger.info("Spider finished.")
+    logger.info("Spider finished. Found %d new listings.", len(discord_listings))
 
     return discord_listings

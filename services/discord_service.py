@@ -27,9 +27,9 @@ class MyDiscordClient(discord.Client):
         logging.debug("""Logged in as %s (ID: %s)""", self.user, self.user.id)
         logging.debug("------")
 
-    @tasks.loop(seconds=60)  # task runs every 60 seconds
+    @tasks.loop(hours=1)  # task runs every 1 hour
     async def my_background_task(self):
-        channel = self.get_channel(1294757142032814153)  # channel ID goes here
+        channel = self.get_channel(1294990979475963994)  # channel ID goes here
         # await channel.send("Hello, world!")
 
         # Setup database manager.
@@ -39,8 +39,40 @@ class MyDiscordClient(discord.Client):
 
         # Run the spider.
         listings = await run_spider(database_manager=database_manager)
+
+        await channel.send(f"Found {len(listings)} new listings.")
+
         for listing in listings:
-            await channel.send(listing)
+            title, image_url, description, price, size, year, floor, url = listing
+            embed = discord.Embed(
+                title=title,
+                url=url,
+                description=description,
+                color=discord.Color.blue(),
+            )
+            embed.set_image(url=image_url)
+            embed.add_field(
+                name="**Cena**",
+                value="{:.2f} €".format(price),
+                inline=True,
+            )
+            embed.add_field(
+                name="**Velikost**",
+                value="{:.2f} m²".format(size),
+                inline=True,
+            )
+            embed.add_field(
+                name="**Zgrajeno leta**",
+                value=year,
+                inline=True,
+            )
+            embed.add_field(
+                name="**Nadstropje**",
+                value=floor,
+                inline=True,
+            )
+
+            await channel.send(embed=embed)
 
     @my_background_task.before_loop
     async def before_my_task(self):
