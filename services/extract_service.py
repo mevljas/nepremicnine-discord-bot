@@ -41,9 +41,11 @@ async def parse_result(
 
     logger.debug("Extracting result data...")
 
-    image_url = await item.locator(
-        'xpath=div/div[contains(@class, "property-image")]/a[2]/img'
-    ).get_attribute("src")
+    image_url = (
+        await item.locator('xpath=div/div[contains(@class, "property-image")]/a[2]/img')
+        .or_(item.locator('xpath=//*[@id="slider0"]/div/div/div[1]/div/div/a/img'))
+        .get_attribute("src")
+    )
 
     details = item.locator('xpath=div/div[contains(@class, "property-details")]')
 

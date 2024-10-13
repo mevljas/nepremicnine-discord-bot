@@ -12,6 +12,10 @@ async def run_spider(database_manager: DatabaseManager):
     Setups the playwright library and starts the crawler.
     """
     logger.info("Spider started.")
+
+    # List of new listings to send to Discord.
+    discord_listings = []
+
     async with async_playwright() as playwright:
         # Connect to the browser.
         # We need to use a real browser because of Cloudflare protection.
@@ -65,7 +69,10 @@ async def run_spider(database_manager: DatabaseManager):
             # We found a new listing.
             logger.info("New listing found %s.", nepremicnine_id)
             await database_manager.save_listing(nepremicnine_id, new_data)
+            discord_listings.append(new_data)
         await browser_page.close()
 
     await browser.close()
     logger.info("Spider finished.")
+
+    return discord_listings

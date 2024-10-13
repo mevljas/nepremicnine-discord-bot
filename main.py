@@ -1,24 +1,26 @@
 """Module that contains main application logic."""
 
-import asyncio
+import os
 
 from dotenv import load_dotenv
 
 from database.database_manager import DatabaseManager
 from logger.logger import logger
+from services.discord_service import MyDiscordClient
 from spider.spider import run_spider
 
 
-def load_env() -> (str, str, str, int):
+def load_env() -> str:
     """
     Load ENV variables.
     :return: postgres_user, postgres_password, postgres_db
     """
     load_dotenv()
-    # return postgres_user, postgres_password, postgres_db
+    discord_token = os.getenv("DISCORD_TOKEN")
+    return discord_token
 
 
-async def main():
+def main():
     """
     Main function.
     :return:
@@ -26,18 +28,21 @@ async def main():
     logger.info("Application started.")
 
     # Load env variables.
-    # postgres_user, postgres_password, postgres_db = load_env()
+    discord_token = load_env()
 
-    # Setup database manager.
-    database_manager = DatabaseManager(
-        url="sqlite+aiosqlite:///nepremicnine_database.sqlite"
-    )
+    discord_client = MyDiscordClient()
+    discord_client.run(discord_token)
 
-    # Run the spider.
-    await run_spider(database_manager=database_manager)
+    # # Setup database manager.
+    # database_manager = DatabaseManager(
+    #     url="sqlite+aiosqlite:///nepremicnine_database.sqlite"
+    # )
+    #
+    # # Run the spider.
+    # run_spider(database_manager=database_manager)
 
     logger.info("Application finished.")
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

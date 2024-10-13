@@ -10,7 +10,7 @@ package-mode = false
 [tool.poetry.dependencies]
 python = "3.12.7"
 beautifulsoup4 = "^4.12.3"
-black = "^24.4.2"
+black = "24.10.0"
 playwright = "^1.45.1"
 sqlalchemy = "^2.0.31"
 pytest-playwright = "^0.5.1"
@@ -19,9 +19,10 @@ python-dotenv = "^1.0.1"
 pylint = "^3.3.1"
 urllib3 = "^2.2.3"
 aiosqlite = "^0.20.0"
+discord = "^2.3.2"
 
 [tool.black]
-required-version = "24.4.2"
+required-version = "24.10.0"
 
 
 [build-system]
