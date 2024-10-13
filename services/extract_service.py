@@ -1,5 +1,7 @@
 """Module that contains data extraction logic."""
 
+import logging
+
 from playwright.async_api import Page, Locator
 
 from logger.logger import logger
@@ -25,6 +27,7 @@ async def parse_page(
 
     # Loop through all the listings.
     extracted_data = {}
+
     for result in results:
         item_id, data = await parse_result(result)
         extracted_data[item_id] = data
@@ -41,11 +44,13 @@ async def parse_result(
 
     logger.debug("Extracting result data...")
 
-    image_url = (
-        await item.locator('xpath=div/div[contains(@class, "property-image")]/a[2]/img')
-        .or_(item.locator('xpath=//*[@id="slider0"]/div/div/div[1]/div/div/a/img'))
-        .get_attribute("src")
-    )
+    # TODO: This Xpath query does not work on all listings.
+
+    image_url = await item.locator(
+        'xpath=div/div[contains(@class, "property-image")]//a/img'
+    ).first.get_attribute("src")
+
+    logging.debug(f"Image url {image_url}")
 
     # Replace the url domain, so it will work on Discord.
     if image_url:
