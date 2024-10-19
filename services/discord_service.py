@@ -52,11 +52,6 @@ class MyDiscordClient(discord.Client):
             )
             embed.set_image(url=image_url)
             embed.add_field(
-                name="**Povezava**",
-                value=image_url,
-                inline=False,
-            )
-            embed.add_field(
                 name="**Cena**",
                 value="{:.2f} €".format(price),
                 inline=True,

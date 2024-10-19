@@ -44,11 +44,9 @@ async def parse_result(
 
     logger.debug("Extracting result data...")
 
-    # TODO: This Xpath query does not work on all listings.
-
     image_url = await item.locator(
-        'xpath=div/div[contains(@class, "property-image")]//a/img'
-    ).first.get_attribute("src")
+        'xpath=div/div[contains(@class, "property-image")]/a[2]/img'
+    ).first.get_attribute("data-src")
 
     logging.debug(f"Image url {image_url}")
 
