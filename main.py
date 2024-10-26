@@ -4,10 +4,8 @@ import os
 
 from dotenv import load_dotenv
 
-from database.database_manager import DatabaseManager
 from logger.logger import logger
 from services.discord_service import MyDiscordClient
-from spider.spider import run_spider
 
 
 def load_env() -> str:

@@ -1,7 +1,5 @@
 """Module that contains data extraction logic."""
 
-import logging
-
 from playwright.async_api import Page, Locator
 
 from logger.logger import logger
@@ -47,8 +45,6 @@ async def parse_result(
     image_url = await item.locator(
         'xpath=div/div[contains(@class, "property-image")]/a[2]/img'
     ).first.get_attribute("data-src")
-
-    logging.debug(f"Image url {image_url}")
 
     # Replace the url domain, so it will work on Discord.
     if image_url:

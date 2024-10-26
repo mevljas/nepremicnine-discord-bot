@@ -24,11 +24,19 @@ class MyDiscordClient(discord.Client):
         self.my_background_task.start()
 
     async def on_ready(self):
+        """
+        Called when the bot is ready.
+        :return:
+        """
         logging.debug("""Logged in as %s (ID: %s)""", self.user, self.user.id)
         logging.debug("------")
 
     @tasks.loop(hours=1)  # task runs every 1 hour
     async def my_background_task(self):
+        """
+        Background task that runs every 1 hour.
+        :return:
+        """
         channel = self.get_channel(1294990979475963994)  # channel ID goes here
         # await channel.send("Hello, world!")
 
@@ -53,12 +61,12 @@ class MyDiscordClient(discord.Client):
             embed.set_image(url=image_url)
             embed.add_field(
                 name="**Cena**",
-                value="{:.2f} €".format(prices[0]),
+                value=f"{prices[0]:.2f} €",
                 inline=True,
             )
             embed.add_field(
                 name="**Velikost**",
-                value="{:.2f} m²".format(size),
+                value=f"{size:.2f} m²",
                 inline=True,
             )
             embed.add_field(
@@ -75,7 +83,7 @@ class MyDiscordClient(discord.Client):
             if len(prices) > 1:
                 embed.add_field(
                     name="**Prejšnje cene**",
-                    value=", ".join("{:.2f} €".format(price) for price in prices[1:]),
+                    value=", ".join(f"{price:.2f} €" for price in prices[1:]),
                     inline=False,
                 )
 
@@ -83,4 +91,8 @@ class MyDiscordClient(discord.Client):
 
     @my_background_task.before_loop
     async def before_my_task(self):
+        """
+        Wait until the bot is ready.
+        :return:
+        """
         await self.wait_until_ready()  # wait until the bot logs in
