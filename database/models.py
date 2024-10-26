@@ -51,7 +51,7 @@ class Listing(Base):
     nepremicnine_id: Mapped[str] = Column(String(50), unique=True)
     url: Mapped[str] = Column(String(150), unique=True)
     accessed_time = Column(DateTime)
-    prices: Mapped[List["Price"]] = relationship(back_populates="listing")
+    prices: Mapped[List["Price"]] = relationship(lazy="selectin")
 
 
 class Price(Base):
@@ -59,10 +59,9 @@ class Price(Base):
     A table that stores the current and previous prices.
     """
 
-    __tablename__ = "history"
+    __tablename__ = "price"
 
     id: Mapped[int] = Column(Integer, primary_key=True, autoincrement=True)
     price: Mapped[float] = Column(Integer, unique=False)
     accessed_time = Column(DateTime)
     listing_id: Mapped[int] = Column(ForeignKey("listing.id"))
-    listing: Mapped["Listing"] = relationship(back_populates="prices")

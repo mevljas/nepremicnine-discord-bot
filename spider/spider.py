@@ -50,16 +50,24 @@ async def run_spider(database_manager: DatabaseManager):
             if nepremicnine_id in saved_results:
                 logger.debug("Listing already saved.")
 
-                _, _, _, current_price, _, _, _, _ = new_data
+                _, _, _, new_price, _, _, _, _ = new_data
 
-                listing_id, saved_price = saved_results[nepremicnine_id]
+                listing_id, old_prices = saved_results[nepremicnine_id]
 
-                if saved_price != current_price:
+                if old_prices[-1] != new_price:
                     logger.info("New saved_price detected for %s.", nepremicnine_id)
                     await database_manager.add_new_price(
                         listing_id=listing_id,
-                        current_price=current_price,
+                        current_price=new_price,
                     )
+
+                    print("New data before merging: ", new_data)
+
+                    # Merge old and new prices.
+                    old_prices.append(new_price)
+                    new_data = new_data[:3] + (old_prices,) + new_data[4:]
+
+                    print("New data after merging: ", new_data)
 
                     discord_listings.append(new_data)
 
@@ -70,7 +78,11 @@ async def run_spider(database_manager: DatabaseManager):
 
             # We found a new listing.
             logger.info("New listing found %s.", nepremicnine_id)
+
             await database_manager.save_listing(nepremicnine_id, new_data)
+
+            # Convert price to a list of prices
+            new_data = new_data[:3] + ([new_data[3]],) + new_data[4:]
             discord_listings.append(new_data)
         await browser_page.close()
 

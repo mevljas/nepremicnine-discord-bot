@@ -6,7 +6,7 @@ import threading
 from asyncio import current_task
 from datetime import datetime
 
-from sqlalchemy import exc, select, Result
+from sqlalchemy import exc, select, Result, func
 from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
@@ -92,7 +92,7 @@ class DatabaseManager:
         logger.debug("Saving new price in the database.")
         async with self.async_session_factory()() as session:
 
-            listing = session.get(Listing, listing_id)
+            listing = await session.get(Listing, listing_id)
 
             price = Price(accessed_time=datetime.now(), price=current_price)
             session.add(price)
@@ -113,7 +113,7 @@ class DatabaseManager:
         """
         logger.debug("Saving new listing %s to the database.", item_id)
 
-        _, _, _, current_price, _, _, _, url = data
+        _, _, _, prices, _, _, _, url = data
 
         async with self.async_session_factory()() as session:
             try:
@@ -126,7 +126,7 @@ class DatabaseManager:
 
                 session.add(listing)
 
-                price = Price(accessed_time=datetime.now(), price=current_price)
+                price = Price(accessed_time=datetime.now(), price=prices)
                 session.add(price)
                 listing.prices.append(price)
 
@@ -152,15 +152,26 @@ class DatabaseManager:
         """
         logger.debug("Getting all listings from the database.")
         async with self.async_session_factory()() as session:
-            # Select all listing and join them with their last price (by date).
             stmt = (
-                select(Listing.nepremicnine_id, Listing.id, Price.price)
-                .join(Price)
-                .order_by(Price.accessed_time.desc())
-                .distinct(Listing.id)
+                select(
+                    Listing.nepremicnine_id,
+                    Listing.id,
+                    func.group_concat(Price.price, ",").label("prices"),
+                )
+                .join(Price, Listing.id == Price.listing_id)
+                .group_by(Listing.id)
             )
             result: Result = await session.execute(stmt)
-            logger.debug("Getting all listings finished.")
+            logger.debug("Getting all listings with prices finished.")
 
-            # return a dictionary of listings. Use id as the key and price as the value.
-            return {item[0]: (item[1], item[2]) for item in result.all()}
+            # Convert the comma-separated string back to a list of prices
+            listings_with_prices = {
+                item[0]: (
+                    item[1],
+                    [float(price) for price in item[2].split(",")] if item[2] else [],
+                )
+                for item in result.all()
+            }
+
+            # return a dictionary of listings. Use id as the key and prices as the value.
+            return listings_with_prices

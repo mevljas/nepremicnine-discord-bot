@@ -43,7 +43,7 @@ class MyDiscordClient(discord.Client):
         await channel.send(f"Found {len(listings)} new listings.")
 
         for listing in listings:
-            title, image_url, description, price, size, year, floor, url = listing
+            title, image_url, description, prices, size, year, floor, url = listing
             embed = discord.Embed(
                 title=title,
                 url=url,
@@ -53,7 +53,7 @@ class MyDiscordClient(discord.Client):
             embed.set_image(url=image_url)
             embed.add_field(
                 name="**Cena**",
-                value="{:.2f} €".format(price),
+                value="{:.2f} €".format(prices[0]),
                 inline=True,
             )
             embed.add_field(
@@ -71,6 +71,13 @@ class MyDiscordClient(discord.Client):
                 value=floor,
                 inline=True,
             )
+
+            if len(prices) > 1:
+                embed.add_field(
+                    name="**Prejšnje cene**",
+                    value=", ".join("{:.2f} €".format(price) for price in prices[1:]),
+                    inline=False,
+                )
 
             await channel.send(embed=embed)
 
