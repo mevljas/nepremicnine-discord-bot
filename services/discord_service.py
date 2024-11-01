@@ -48,17 +48,23 @@ class MyDiscordClient(discord.Client):
         # Run the spider.
         listings = await run_spider(database_manager=database_manager)
 
+        logging.debug("Found %s new listings.", len(listings))
+
         await channel.send(f"Found {len(listings)} new listings.")
 
         for listing in listings:
             title, image_url, description, prices, size, year, floor, url = listing
+
+            logging.debug("Listing: %s", listing)
+
             embed = discord.Embed(
                 title=title,
                 url=url,
                 description=description,
                 color=discord.Color.blue(),
             )
-            embed.set_image(url=image_url)
+            if image_url:
+                embed.set_image(url=image_url)
             embed.add_field(
                 name="**Cena**",
                 value=f"{prices[0]:.2f} €",
