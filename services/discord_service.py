@@ -32,7 +32,7 @@ class MyDiscordClient(discord.Client):
         logger.debug("""Logged in as %s (ID: %s)""", self.user, self.user.id)
         logger.debug("------")
 
-    @tasks.loop(hours=2)  # task runs every 2 hours
+    @tasks.loop(hours=1)  # task runs every 1 hour
     async def my_background_task(self):
         """
         Background task that runs every day.
@@ -56,7 +56,6 @@ class MyDiscordClient(discord.Client):
                 logger.debug("Sending listings to channel %s.", channel_id)
 
                 channel = self.get_channel(int(channel_id))  # channel ID goes here
-                # await channel.send("Hello, world!")
 
                 logger.debug("Found %s new listings.", len(listings))
 
@@ -79,7 +78,7 @@ class MyDiscordClient(discord.Client):
                         embed.set_image(url=image_url)
                     embed.add_field(
                         name="**Cena**",
-                        value=f"{prices[0]:.2f} €",
+                        value=f"{prices[-1]:.2f} €",
                         inline=True,
                     )
                     embed.add_field(
@@ -103,7 +102,7 @@ class MyDiscordClient(discord.Client):
                     if len(prices) > 1:
                         embed.add_field(
                             name="**Prejšnje cene**",
-                            value=", ".join(f"{price:.2f} €" for price in prices[1:]),
+                            value=", ".join(f"{price:.2f} €" for price in prices[:-1]),
                             inline=False,
                         )
 

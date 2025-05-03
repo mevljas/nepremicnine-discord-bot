@@ -160,6 +160,7 @@ class DatabaseManager:
                 )
                 .join(Price, Listing.id == Price.listing_id)
                 .group_by(Listing.id)
+                .order_by(Price.accessed_time.asc())
             )
             result: Result = await session.execute(stmt)
             logger.debug("Getting all listings with prices finished.")
