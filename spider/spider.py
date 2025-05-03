@@ -1,8 +1,8 @@
 # pylint: disable=too-many-locals
 """Module that contains main spider logic."""
-
+from asyncio import sleep
 from collections import defaultdict
-from time import sleep
+
 
 from playwright.async_api import async_playwright
 
@@ -75,7 +75,7 @@ async def run_spider(database_manager: DatabaseManager) -> tuple[dict, bool]:
                     error = True
                 index += 1
 
-                sleep(60)  # Sleep for 1 minute to avoid being blocked.
+                await sleep(60)  # Sleep for 1 minute to avoid being blocked.
 
             for nepremicnine_id, new_data in results.items():
                 logger.debug("Listing ID: %s", nepremicnine_id)
