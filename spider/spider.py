@@ -2,6 +2,7 @@
 """Module that contains main spider logic."""
 
 from collections import defaultdict
+from time import sleep
 
 from playwright.async_api import async_playwright
 
@@ -73,6 +74,8 @@ async def run_spider(database_manager: DatabaseManager) -> tuple[dict, bool]:
                     logger.error("Error parsing page: %s", e)
                     error = True
                 index += 1
+
+                sleep(60)  # Sleep for 1 minute to avoid being blocked.
 
             for nepremicnine_id, new_data in results.items():
                 logger.debug("Listing ID: %s", nepremicnine_id)
