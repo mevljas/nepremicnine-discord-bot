@@ -128,7 +128,7 @@ async def parse_result(
     Description: %s,
     Price: %f,
     Size: %s,
-    Year: %d,
+    Year: %s,
     Floor: %s,
     ID: %s,
     Url: %s.
