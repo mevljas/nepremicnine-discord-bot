@@ -158,11 +158,11 @@ def init_logging():
     Initializes logging.
     :return:
     """
-    level = logging.DEBUG
+    level = logging.INFO
     root_logger = logging.getLogger()
     root_logger.setLevel(level)
 
-    console_level = "DEBUG"
+    console_level = "INFO"
     console_handler = logging.StreamHandler(stream=sys.stdout)
     console_handler.setLevel(console_level)
     console_format = "[%(asctime)s %(threadName)s %(levelname)s] %(message)s"
