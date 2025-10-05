@@ -46,7 +46,7 @@ async def run_spider(database_manager: DatabaseManager) -> tuple[dict, bool]:
             # await browser_page.route("**/*", block_aggressively)
 
             logger.debug("Navigating to %s", page_url)
-            await browser_page.goto(page_url)
+            await browser_page.goto(page_url, wait_until="domcontentloaded")
 
             # await browser_page.pause()
 
