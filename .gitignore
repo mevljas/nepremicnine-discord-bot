@@ -236,6 +236,9 @@ fabric.properties
 # Editor-based Rest Client
 .idea/httpRequests
 
+# GitHub Copilot plugin files
+.idea/copilot.data*
+
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 *.sqlite
